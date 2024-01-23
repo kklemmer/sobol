@@ -1,0 +1,16 @@
+class inputParam():
+    def __init__(
+            self,
+            prior) -> None:
+
+        
+    def sample(N):
+        """
+        Input:
+              N (int) : number of samples to draw
+        
+        Returns:
+              N samples from drawn from the prior
+        """
+
+        
