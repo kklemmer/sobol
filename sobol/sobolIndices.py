@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 class sobolIndices():
     def __init__(
@@ -236,3 +237,13 @@ class sobolIndices():
 
         # calculate the total indices
         self.total_indices()
+
+    def save_to_csv(self, path):
+        """
+        Save _f_total, and _AB_total to a dataframe then saves the dataframe to csv
+        """
+
+        # TODO should check that these things exist
+
+        save_df = pd.DataFrame(data = {'f_total': self._f_total, 'AB_total': self._AB_total})
+        save_df.to_csv(path)
