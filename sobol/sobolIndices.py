@@ -20,8 +20,6 @@ class sobolIndices():
         self.model_params = model_params
         self.N = N
 
-        print(self.N)
-
         self.num_params = np.sum([param.num_params for _,param in self.params.items()])
 
     def sample_params(self):
@@ -130,9 +128,9 @@ class sobolIndices():
         for _,param in self.params.items():
             tmp_AB_total = np.vstack([tmp_AB_total, param.A_B])
 
-        # stack the B_A matrices
-        for _,param in self.params.items():
-            tmp_AB_total = np.vstack([tmp_AB_total, param.B_A])
+        # # stack the B_A matrices
+        # for _,param in self.params.items():
+        #     tmp_AB_total = np.vstack([tmp_AB_total, param.B_A])
 
         self._AB_total = tmp_AB_total
 
@@ -147,6 +145,16 @@ class sobolIndices():
             self._f_total = self.model(self._AB_total, self.model_params)
         else:
             self._f_total = self.model(self._AB_total)
+
+    def construct_f_all(self):
+        """
+        Construct f vectors after f_total has been calculated
+        """
+
+        self._calculate_f_A()
+        self._calculate_f_B()
+        self._calculate_f_A_B()
+        self._calculate_f_B_A()
 
     def calculate_f(self):
         """
@@ -175,7 +183,7 @@ class sobolIndices():
         """
 
         for _,param in self.params.items():
-            numerator = 1/(2*self.N) * np.sum((self.f_A - param.f_A)**2)
+            numerator = 1/(2*self.N) * np.sum((self.f_B - param.f_B)**2)
             param.sT = numerator/self.varX
 
 
@@ -201,6 +209,24 @@ class sobolIndices():
 
         # calculate the f vectors
         self.calculate_f()
+
+        # calculate the total variance
+        self.total_variance()
+
+        # calculate the first order indices
+        self.first_order_indices()
+
+        # calculate the total indices
+        self.total_indices()
+
+    def sobol_calc_parallel(self):
+        """
+        Calculate the first order and total sobol indices in parallel
+        First run self._calculate_f_total
+        """
+    
+        # calculate the f vectors
+        self.construct_f_all()
 
         # calculate the total variance
         self.total_variance()
